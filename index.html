@@ -3,45 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>애니팡 점수 테스트</title>
+  <title>백호팡</title>
   <link rel="manifest" href="manifest.json">
-  <style>
-    body {
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      background: linear-gradient(135deg, #ffe0e0, #ffdede);
-    }
-    h1 { color: #ff5555; }
-    button {
-      font-size: 1.2rem;
-      padding: 10px 20px;
-      margin: 10px;
-      border: none;
-      border-radius: 12px;
-      background-color: #ff7676;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #ff5a5a;
-    }
-  </style>
+  <link rel="stylesheet" href="main.css">
+
 </head>
 <body>
-  <h1>🎯 애니팡 점수 테스트</h1>
-  <p id="score">현재 점수: 0</p>
-  <p id="highScore">최고 점수: 0</p>
-  <button id="addScore">점수 +10</button>
-  <button id="resetScore">점수 초기화</button>
+
+  <section id="main_frame">
+    <div id ="content" class="base_container">
+      <h1>🎯 백호팡 h1</h1>
+      <p id="score">현재 점수: 0</p>
+      <p id="highScore">최고 점수: 0</p>
+      <button id="addScore">점수 +10</button>
+      <button id="resetScore">점수 초기화</button>
+    </div>
+
+  </section>
+
+
 
   <script src="main.js"></script>
+
   <script>
-    if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator) { // 브라우저의 serviceWorker 기능 지원여부 확인
       navigator.serviceWorker.register('service-worker.js');
     }
   </script>

@@ -1,6 +1,6 @@
 {
-  "name": "애니팡 점수 테스트",
-  "short_name": "AnipangTest",
+  "name": "백호팡 제이슨 name",
+  "short_name": "백호팡",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffdede",
