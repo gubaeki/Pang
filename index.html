@@ -8,19 +8,44 @@
   <link rel="stylesheet" href="main.css">
 
 </head>
+
 <body>
 
   <section id="main_frame">
-    <div id ="content" class="base_container">
-      <h1>🎯 백호팡 h1</h1>
-      <p id="score">현재 점수: 0</p>
-      <p id="highScore">최고 점수: 0</p>
-      <button id="addScore">점수 +10</button>
-      <button id="resetScore">점수 초기화</button>
-    </div>
+    
+    <div class="base_container">
+      <div id="combo"></div>
+      
+      <!-- top -->
+      <div class="top_section">
+        <div class="top_inner_section" style="background-image: url(images/score.png); background-size: 18vh;">
+          <p id="score">0</p>
+        </div>
+        <div class="top_inner_section" style="background-image: url(images/clock.png); ">
+          <h1 id="timer">60</h1>
+        </div>
+        <div class="top_inner_section" style="background-image: url(images/best_record.png); background-size: 18vh;">
+          <p id="highScore">0</p>
+        </div>
+        
 
+        
+      </div>
+
+      <!-- middle -->
+      <div class="middle_section">
+        <div id="game_board">
+        </div>
+      </div>
+
+      <!-- bottom -->
+      <div class="bottom_section">
+        <button id="resetScore">초기화</button>
+        <button id="start">시작하기</button>
+        <button id="changeBoard">보드교체</button>
+      </div>
+      
   </section>
-
 
 
   <script src="main.js"></script>

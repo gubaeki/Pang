@@ -8,61 +8,148 @@ body {
     margin: 0;
     background: linear-gradient(135deg, #ffe0e0, #ffdede);
   }
-  h1 { color: #ff5555; }
+
+h1 {
+    color: #000000;
+    font-size: 3.5vh;
+}
+
+#highScore {
+    font-family:Impact;
+    color: #2600ff;
+    font-size: 4vh;
+}
+#score {
+    font-family: Impact;
+    color: #39ff1f;
+    font-size: 4vh;
+}
+
+#combo {
+  position: absolute;
+  top: 20px;
+  font-size: 32px;
+  font-weight: bold;
+  color: #ff4444;
+  text-shadow: 0 0 10px rgba(255, 80, 80, 0.6);
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.2s;
+}
+
   button {
-    font-size: 1.2rem;
-    padding: 10px 20px;
+    flex: 1;
+    font-size: 3vh;
     margin: 10px;
-    border: none;
+    border: solid;
+    border-width: 0.7vh;
     border-radius: 12px;
     background-color: #ff7676;
+    height: 10vh;
     color: white;
     cursor: pointer;
   }
   button:hover {
     background-color: #ff5a5a;
   }
-
-  
-
+  button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
   #main_frame {
-	display: -ms-flexbox;
-	-ms-flex-pack: center;
-	-ms-flex-align: center;
-	-moz-align-items: center;
-	-webkit-align-items: center;
-	-ms-align-items: center;
-	align-items: center;
-	display: -moz-flex;
-	display: -webkit-flex;
-	display: -ms-flex;
-	display: flex;
-	-moz-justify-content: center;
-	-webkit-justify-content: center;
-	-ms-justify-content: center;
-	justify-content: center;
-	min-height: 100vh;
-	height: 100%;
-	/*height: 100vh !important;*/
-	width: 100%;
-	position: relative;
-	text-align: center;
-	overflow: hidden;
-	z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+  z-index: 1;
 }
-#main_frame .base_container {
-	height: 99%;
-	max-height: 99%;
-    width: 56.25vh;
-    max-width: 56.25vh;
+
+.base_container {
+  aspect-ratio: 9 / 16; /* 1080x1920 비율 유지 */
+  width: min(56.25vh, 100vw); /* 세로 기준으로 설정하되, 화면이 좁아질 때는 가로 100% 이하로 제한 */
+  height: auto; /* 높이는 비율에 따라 자동 계산 */
+  
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-image: url("images/base_container.png");
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+
+  
+}
+/* 세 영역 비율 */
+.top_section {
+  flex: 1.5; /* 15% */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.middle_section {
+  flex: 7; /* 70% */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bottom_section {
+  flex: 1.5; /* 15% */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top_inner_section {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: 15vh;
+  background-repeat: no-repeat;
+  background-position:center;
+}
+
+#game_board {
+  position: relative;
+  overflow: visible; /* comboDiv가 잘리지 않게 */
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    width: 90%;
+    aspect-ratio: 1 / 1; /* 정사각형 보드 */
+    gap: 0%;
+    background: rgba(236, 192, 192, 0.904);
+    position: relative; 
     border-style: solid;
-    border-color: rgb(64, 22, 250);
-    border-width: 0.5vh;
-	position: relative;
-	padding-left: 0%;
-    background-image: url("images/image_main_1080_1920.jpg");
-    background-size: cover;
-	background-position: center;
-	overflow: hidden;
+    border-color: chocolate;
+    border-width: 0.7vh;
 }
+
+.cell {
+    position: absolute;
+    /* Grid 셀 크기에 맞춰 1/8로 설정 */
+    width: calc(100% / 8); 
+    height: calc(100% / 8); 
+    background-size: cover;
+    will-change: transform; /* 애니메이션은 transform만 사용 */
+  
+}
+
+/* 7종류 캐릭터 */
+.cell.type1 { background-image: url('images/char1.png'); }
+.cell.type2 { background-image: url('images/char2.png'); }
+.cell.type3 { background-image: url('images/char3.png'); }
+.cell.type4 { background-image: url('images/char4.png'); }
+.cell.type5 { background-image: url('images/char5.png'); }
+.cell.type6 { background-image: url('images/char6.png'); }
+.cell.type7 { background-image: url('images/char7.png'); }
+
+
