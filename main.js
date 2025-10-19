@@ -532,6 +532,8 @@ function startGameTimer() {
       score = 0;
       timeLeft = 60;
       timerText.textContent = timeLeft;
+      timerText.style.animation = '';
+      practiceText.style.display = 'block';
       updateUI();
     }
   }, 1000);
@@ -620,7 +622,7 @@ function hideLoading(overlay) {
 
 // changeBoard 버튼 클릭
 document.getElementById('changeBoard').addEventListener('click', () => {
-
+  const overlay = showLoading();
   setTimeout(() => {
     // 60 초기화
     clearInterval(timerInterval);
