@@ -12,16 +12,106 @@ function updateUI() {
 }
 
 startBtn.addEventListener('click', () => {
+  practiceText.style.display = 'none';
   createBoard();
   startGameTimer();
 });
 
 resetBtn.addEventListener('click', () => {
-  score = 0;
-  localStorage.removeItem('highScore');
-  highScore = 0;
-  updateUI();
+  // 이미 팝업이 떠 있으면 중복 생성 방지
+  if (document.querySelector('.confirm-overlay')) return;
+
+  // 🔹 반투명 배경
+  const overlay = document.createElement('div');
+  overlay.className = 'confirm-overlay';
+  overlay.style.position = 'fixed';
+  overlay.style.top = 0;
+  overlay.style.left = 0;
+  overlay.style.width = '100vw';
+  overlay.style.height = '100vh';
+  overlay.style.background = 'rgba(0, 0, 0, 0.5)';
+  overlay.style.display = 'flex';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
+  overlay.style.zIndex = '9999';
+
+  // 🔹 팝업 박스
+  const box = document.createElement('div');
+  box.className = 'confirm-box';
+  box.style.background = 'linear-gradient(135deg, #fff1f1, #ffd9d9)';
+  box.style.border = '3px solid #ff7070';
+  box.style.borderRadius = '20px';
+  box.style.boxShadow = '0 0 20px rgba(255, 120, 120, 0.8)';
+  box.style.padding = '25px 30px';
+  box.style.textAlign = 'center';
+  box.style.fontFamily = "'Baloo 2', sans-serif";
+  box.style.color = '#ff4444';
+  box.style.fontSize = '20px';
+  box.style.fontWeight = 'bold';
+  box.style.animation = 'popupFadeIn 0.3s ease-out';
+
+  box.innerHTML = `
+  <div style="
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* 수직 중앙 */
+    justify-content: center;
+    text-align: center;    /* p 텍스트 중앙 */
+    padding: 20px;
+">
+    <p style="
+      margin-bottom: 20px;
+    ">정말 모든 기록을 초기화하시겠습니까?</p>
+    <div style="display: flex; justify-content: center;">
+    <button id="confirmYes" style="
+      background:#ff5555;
+      color:white;
+      font-size:16px;
+      font-weight:bold;
+      border:none;
+      border-radius:12px;
+      padding:8px 16px;
+      margin:0 10px;
+      cursor:pointer;
+      box-shadow:0 0 10px rgba(255,100,100,0.8);
+      transition:transform 0.1s ease;
+    ">확인</button>
+    <button id="confirmNo" style="
+      background:#ddd;
+      color:#555;
+      font-size:16px;
+      font-weight:bold;
+      border:none;
+      border-radius:12px;
+      padding:8px 16px;
+      margin:0 10px;
+      cursor:pointer;
+      transition:transform 0.1s ease;
+    ">취소</button>
+    </div>
+    </div>
+  `;
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  // 🔹 버튼 동작
+  const yesBtn = document.getElementById('confirmYes');
+  const noBtn = document.getElementById('confirmNo');
+
+  yesBtn.addEventListener('click', () => {
+    score = 0;
+    localStorage.removeItem('highScore');
+    highScore = 0;
+    updateUI();
+    overlay.remove();
+  });
+
+  noBtn.addEventListener('click', () => {
+    overlay.remove();
+  });
 });
+
 
 
 const boardSize = 8; // 8x8 보드
@@ -48,6 +138,8 @@ let combo = 0;
 let comboTimer = null;
 const comboText = document.getElementById('combo'); // HTML에 표시할 요소 추가 필요
 
+// 연습문구
+const practiceText = document.getElementById('practiceText');
 
 // 셀 하나의 위치 계산
 function getCellPosition(x, y) {
@@ -417,7 +509,9 @@ function startGameTimer() {
   updateUI();
 
   startBtn.disabled = true; // 시작 버튼 비활성화
+  resetBtn.disabled = true; // 초기화 버튼 비활성화
 
+  timerText.style.animation = 'blink 2s infinite';
   timerInterval = setInterval(() => {
     timeLeft--;
     timerText.textContent = timeLeft;
@@ -426,6 +520,7 @@ function startGameTimer() {
       clearInterval(timerInterval);
       timerText.textContent = '0';
       startBtn.disabled = false; // 타이머 끝나면 버튼 활성화
+      resetBtn.disabled = false; // 초기화 버튼 비활성화
 
       // 최고점수 갱신
       if (score > highScore) {
@@ -435,6 +530,8 @@ function startGameTimer() {
 
       alert(`⏰ 시간 종료! 최종 점수: ${score}`);
       score = 0;
+      timeLeft = 60;
+      timerText.textContent = timeLeft;
       updateUI();
     }
   }, 1000);
@@ -448,60 +545,105 @@ function handleCombo(cells) {
   const targetCell = cells[Math.floor(cells.length / 2)];
   const rect = targetCell.getBoundingClientRect();
 
+  // 🔥 콤보 div 생성
   const comboDiv = document.createElement('div');
-  comboDiv.classList.add('combo-popup');
-  comboDiv.textContent = `${combo} Combo!`;
+  comboDiv.textContent = `COMBO x${combo}!`;
+  document.body.appendChild(comboDiv);
 
-  comboDiv.style.position = 'fixed'; // ✅ body 기준으로 고정
+  // ✨ 기본 스타일
+  comboDiv.style.position = 'fixed';
   comboDiv.style.left = rect.left + rect.width / 2 + 'px';
   comboDiv.style.top = rect.top - 20 + 'px';
   comboDiv.style.transform = 'translate(-50%, -100%) scale(1)';
-  comboDiv.style.fontSize = '22px';
-  comboDiv.style.fontWeight = 'bold';
-  comboDiv.style.color = '#ff4444';
-  comboDiv.style.textShadow = '0 0 8px rgba(255, 80, 80, 0.8)';
+  comboDiv.style.fontSize = '28px';
+  comboDiv.style.fontWeight = '900';
+  comboDiv.style.fontFamily = "'Comic Sans MS', 'Baloo 2', sans-serif";
+  comboDiv.style.color = '#ffec40';
+  comboDiv.style.textShadow = `
+    0 0 8px #ff7b00,
+    0 0 15px #ff1b1b,
+    0 0 25px rgba(255, 100, 0, 0.8)
+  `;
   comboDiv.style.opacity = '1';
-  comboDiv.style.transition = 'transform 0.6s ease-out, opacity 0.6s ease-out';
   comboDiv.style.pointerEvents = 'none';
   comboDiv.style.zIndex = '9999';
-  console.log(comboDiv);
-  document.body.appendChild(comboDiv);
 
-  // 위로 떠오르면서 사라지는 애니메이션
-  requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          comboDiv.style.transform = 'translate(-50%, -150%) scale(1.3)';
-          comboDiv.style.opacity = '0';
-        });
-      });
-  
+  // 💫 콤보 수에 따라 색상/빛 조정
+  if (combo >= 3 && combo < 5) {
+    comboDiv.style.color = '#4fff83';
+    comboDiv.style.textShadow = `
+      0 0 8px #00ff9dff,
+      0 0 15px #005829ff,
+      0 0 25px rgba(0, 255, 150, 0.8)
+    `;
+  } else if (combo >= 5) {
+    comboDiv.style.color = '#66a3ff';
+    comboDiv.style.textShadow = `
+      0 0 8px #005effff,
+      0 0 15px #001f55ff,
+      0 0 25px rgba(0, 132, 255, 0.9)
+    `;
+  }
 
-  // 일정 시간 뒤 제거
-  setTimeout(() => comboDiv.remove(), 1000);
+  // 💥 등장/사라짐 애니메이션
+  comboDiv.animate([
+    { transform: 'translate(-50%, -100%) scale(0.2)', opacity: 0 },
+    { transform: 'translate(-50%, -120%) scale(1.2)', opacity: 1, offset: 0.4 },
+    { transform: 'translate(-50%, -160%) scale(1)', opacity: 0 }
+  ], {
+    duration: 900,
+    easing: 'ease-out'
+  });
 
-  // 3초 동안 다음 매칭이 없으면 콤보 초기화
+  // 일정 시간 뒤 자동 제거
+  setTimeout(() => comboDiv.remove(), 900);
+
+  // ⏳ 3초 동안 다음 매칭이 없으면 콤보 초기화
   comboTimer = setTimeout(() => {
     combo = 0;
   }, 3000);
 }
 
 
+function showLoading() {
+  const overlay = document.createElement('div');
+  overlay.className = 'loading-overlay';
+  overlay.innerHTML = `<div class="loading-spinner"></div>`;
+  document.body.appendChild(overlay);
+  return overlay; // 나중에 제거할 때 쓰기
+}
+
+function hideLoading(overlay) {
+  overlay.remove();
+}
+
+
 // changeBoard 버튼 클릭
 document.getElementById('changeBoard').addEventListener('click', () => {
-  // 60 초기화
-  clearInterval(timerInterval);
-  timeLeft = 60;
-  timerText.textContent = timeLeft;
-  // 스코어 초기화
-  score = 0;
-  // 콤보 초기화
-  clearTimeout(comboTimer);
-  combo = 0;
-  comboText.textContent = '';
 
-  updateUI();
-  createBoard();
-  startBtn.disabled = false;
+  setTimeout(() => {
+    // 60 초기화
+    clearInterval(timerInterval);
+    timeLeft = 60;
+    timerText.textContent = timeLeft;
+    // 스코어 초기화
+    score = 0;
+    // 콤보 초기화
+    clearTimeout(comboTimer);
+    combo = 0;
+    comboText.textContent = '';
+    practiceText.style.display = 'block';
+    timerText.style.animation = '';
+
+    updateUI();
+    createBoard();
+    startBtn.disabled = false;
+    resetBtn.disabled = false;
+    createBoard();
+
+    hideLoading(overlay); // 연산 끝나면 로딩 제거
+  }, 50); // 최소 딜레이 주면 화면 깜빡임 방지
+  
 });
 
 
